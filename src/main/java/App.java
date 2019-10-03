@@ -10,9 +10,20 @@ public class App {
         compute();
     }
 
-    private static List<Double> inputReading(String fileName){
-        File file = new File(fileName);
+    public static List<Double> compute() throws FileNotFoundException {
+
+        /* Find the file and create a scanner */
+        File file = new File("data");
         Scanner scanner = new Scanner(file);
+
+        List<Double> numbers = inputReading(scanner); // read input
+        double mean = meanComputing(numbers); // compute the mean
+        double std = standardDev(numbers, mean); // compute the standard deviation
+        List<Double> normalized = normalization(numbers, mean, std); // compute the normalization
+        return outputSpreading(normalized, "output"); // output the normalization in a file and return the normalization
+    }
+
+    private static List<Double> inputReading(Scanner scanner){
         List<Double> numbers = new ArrayList<>();
         while (scanner.hasNextDouble()) {
             double number = scanner.nextDouble();
@@ -61,13 +72,5 @@ public class App {
         }
         System.out.println("Wrote output file.");
         return normalized;
-    }
-
-    public static List<Double> compute() throws FileNotFoundException {
-        List<Double> numbers = inputReading("data"); // read input
-        double mean = meanComputing(numbers); // compute the mean
-        double std = standardDev(numbers, mean); // compute the standard deviation
-        List<Double> normalized = normalization(numbers, mean, std); // compute the normalization
-        return outputSpreading(normalized, "output"); // output the normalization in a file and return the normalization
     }
 }
