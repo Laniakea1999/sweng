@@ -10,33 +10,48 @@ public class App {
         compute();
     }
 
-    public static List<Double> compute() throws FileNotFoundException {
-        File file = new File("data");
-        List<Double> normalized = new ArrayList<>();
+    private static List<Double> inputReading(String fileName){
+        File file = new File(fileName);
         Scanner scanner = new Scanner(file);
         List<Double> numbers = new ArrayList<>();
+
         while (scanner.hasNextDouble()) {
             double number = scanner.nextDouble();
             numbers.add(number);
         }
+
+        scanner.close();
+        return numbers;
+    }
+
+    private static double meanComputing(List<Double> numbers){
         double sum = 0;
         for (double f : numbers) {
             sum += f;
         }
-        double mean = sum / numbers.size();
+        return sum / numbers.size();
+    }
+
+    private static double standardDev(List<Double> numbers, double mean){
         double sumSquare = 0;
         for (double f : numbers) {
             double diff = f - mean;
             sumSquare += diff * diff;
         }
-        double std = Math.sqrt(sumSquare / numbers.size());
+        return Math.sqrt(sumSquare / numbers.size());
+    }
+
+    private static List<Double> normalization(List<Double> numbers, double mean, double std){
         for (double f : numbers) {
             normalized.add((f - mean) / std);
         }
-        System.out.println(normalized);
+        return normalized;
+    }
 
+    private static List<Double> outputSpreading(List<Double> normalized, String fileName){
+        System.out.println(normalized);
         try {
-            FileWriter fw = new FileWriter("output");
+            FileWriter fw = new FileWriter(fileName);
             for (double n : normalized) {
                 fw.write(Double.toString(n));
                 fw.write("\n");
@@ -46,7 +61,14 @@ public class App {
             System.out.println("Error writing output file");
         }
         System.out.println("Wrote output file.");
-        scanner.close();
         return normalized;
+    }
+
+    public static List<Double> compute() throws FileNotFoundException {
+        List<Double> numbers = inputReading("data"); // read input
+        double mean = meanComputing(numbers); // compute the mean
+        double std = standardDev(numbers, mean); // compute the standard deviation
+        List<Double> normalized = normalization(numbers, mean, std); // compute the normalization
+        return outputSpreading(normalized, "output"); // output the normalization in a file and return the normalization
     }
 }
