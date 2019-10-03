@@ -14,12 +14,10 @@ public class App {
         File file = new File(fileName);
         Scanner scanner = new Scanner(file);
         List<Double> numbers = new ArrayList<>();
-
         while (scanner.hasNextDouble()) {
             double number = scanner.nextDouble();
             numbers.add(number);
         }
-
         scanner.close();
         return numbers;
     }
@@ -42,6 +40,7 @@ public class App {
     }
 
     private static List<Double> normalization(List<Double> numbers, double mean, double std){
+        List<Double> normalized = new ArrayList<>();
         for (double f : numbers) {
             normalized.add((f - mean) / std);
         }
